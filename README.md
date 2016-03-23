@@ -13,7 +13,7 @@ pip install -r requirements.txt
 
 ### Usage
 ```
-# 
+# providing data folder and data files as input
 python msconsconverter.py '../data/' 'MSCONS_TL_SAMPLE01.txt,MSCONS_TL_SAMPLE02.txt' --verbose
 
 # running sample
