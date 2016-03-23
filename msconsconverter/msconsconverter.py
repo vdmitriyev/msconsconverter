@@ -14,13 +14,13 @@ import os
 import sys
 import time
 import uuid
+from docopt import docopt
 from pprint import pprint
 from datetime import datetime
 from directory_helper import DirectoryHelper
 
-
 # set 'True' for debugging (stdout will be more verbose)
-DEBUG = True
+DEBUG = False
 VERIFY = True
 
 # CONSTANTS
@@ -96,10 +96,11 @@ class MSCONSConverter():
                 else:
                     print('[e] check CSV merger header (elements = {0}) does not equals to constructed row (elements = {1})'.format(header_size, tmp_len))
 
-
             csv.write(tmp_line)
 
         csv.close()
+
+        if DEBUG: print('[i] parsing results saved into file "{0}"'.format(new_file_name))
 
 
     def parse_mscons(self, file_name):
@@ -210,6 +211,7 @@ class Logger(object):
         self.terminal = sys.stdout
         suffix = '{0}-{1}'.format(datetime.fromtimestamp(time.time()).strftime('%Y%m%d-%H%M'), str(uuid.uuid1())[:2])
         self.log = open('logfile-{0}.log'.format(suffix), "a")
+        if DEBUG: print('[i] saving debugging info into file "{0}"'.format('logfile-{0}.log'.format(suffix)))
 
     def write(self, message):
         """ Overriding writing method to write to file and stdout at once"""
@@ -225,13 +227,17 @@ class Logger(object):
 
         pass
 
-def main():
+def main(folder=None, files=None):
     """ Creating classes and running methods"""
 
-    files = [
-             'MSCONS_TL_SAMPLE01.txt'
-            ]
-    folder = '../data'
+    if not files:
+        files = [
+                 'MSCONS_TL_SAMPLE01.txt'
+                ]
+
+    if not folder:
+        folder = '../data'
+
     obj = MSCONSConverter(target_dir=folder)
 
     for _file in files:
@@ -254,12 +260,48 @@ def main():
                                           'HOUR_PE',
                                           'MINUTE_PE',
                                           'UTC_PE',
-                                          'ENERGY'])
+                                          'VALUE'])
 
 if __name__ == '__main__':
 
+
+    #sample()
+    __help__ = """
+
+    MSCONS (EDIFACT) format converter (to CSV)
+
+    Usage:
+        msconsconverter.py <input_folder> <files> [--verbose]
+                                                  [--sample]
+
+        msconsconverter.py -h | --help
+        The <input_folder> argument must be a path to folder with data.
+        The <files> argument must be a file/files with data located in given folder (comma separated).
+
+        Options:
+          -h --help     Show this screen.
+          --sample      Will ignore all given options and try to run sample.
+          --verbose     If given, debug output is also writen to the stdout.
+          """
+
+    opts = docopt(__help__)
+
+    input_folder = opts["<input_folder>"][1:-1]
+    files = opts["<files>"][1:-1].split(',')
+    print files
+
+    # running sample
+    if opts["--sample"]:
+        DEBUG = True
+        main()
+        exit()
+
     # activating logger
-    sys.stdout = Logger()
-    main()
+    if opts["--verbose"]:
+        DEBUG = True
+        sys.stdout = Logger()
+
+    main(folder=input_folder, files=files)
+
 
 

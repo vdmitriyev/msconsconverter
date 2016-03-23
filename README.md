@@ -5,10 +5,19 @@ Converting data from MSCONS (EDIFACT) format to CSV.
 ### Dependencies
 
 * Python 2.7
+* docopt
+
+```
+pip install -r requirements.txt
+```
 
 ### Usage
 ```
-python msconsconverter.py
+# 
+python msconsconverter.py '../data/' 'MSCONS_TL_SAMPLE01.txt,MSCONS_TL_SAMPLE02.txt' --verbose
+
+# running sample
+python msconsconverter.py --sample
 ```
 
 ### Materials MSCONS (EDIFACT)
