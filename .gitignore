@@ -1,3 +1,4 @@
 *.pyc
+*.csv
 /data/__temp__/*
 *.log
