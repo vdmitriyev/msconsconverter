@@ -24,5 +24,6 @@ python msconsconverter.py --sample
 
 * [EDIFACT - English](https://en.wikipedia.org/wiki/EDIFACT)
 * [EDIFACT - German](https://de.wikipedia.org/wiki/EDIFACT)
-* [EDI@Energy MSCONS](http://www.edi-energy.de/files2/MSCONS_MIG_2_2e_Lesefassung_2015_09_15_2015_09_11.pdf) - format description
+* [EDI@Energy MSCONS](https://www.edi-energy.de/index.php?id=38) -> format description, see "Bewegungsdaten" section
 * http://www.edi-energy.de/
+* [Various Usages](https://www.bundesnetzagentur.de/DE/Service-Funktionen/Beschlusskammern/Beschlusskammer6/BK6_31_GPKE_und_GeLiGas/BK6_GPKE_undGeLi_Gas_node.html) -> see "GPKE" section
