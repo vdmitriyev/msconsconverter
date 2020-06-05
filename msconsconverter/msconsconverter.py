@@ -153,7 +153,7 @@ class MSCONSConverter():
 
             if token.startswith('LOC'):
                 subtoken = token.split(ELEMENT_SEPARATOR)
-                if DEBUG: print subtoken
+                if DEBUG: print (subtoken)
                 if subtoken[1] == '172':
                     mscons_dict['loc_mscons'] = subtoken[2]
 
@@ -288,7 +288,7 @@ if __name__ == '__main__':
 
     input_folder = opts["<input_folder>"][1:-1]
     files = opts["<files>"][1:-1].split(',')
-    print files
+    print (files)
 
     # running sample
     if opts["--sample"]:
