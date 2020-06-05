@@ -2,3 +2,6 @@
 *.csv
 /data/__temp__/*
 *.log
+
+# PyCharm
+.idea
