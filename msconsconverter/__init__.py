@@ -1,1 +1,3 @@
-__all__ = ["msconsconverter"]
+from msconsconverter import *
+
+__all__ = []
