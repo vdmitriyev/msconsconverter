@@ -4,9 +4,9 @@
 import os
 import string
 import random
-from time import gmtime, strftime
 import codecs
 import shutil
+from time import gmtime, strftime
 
 TEMP_DIRECTORY = '__temp__'
 RAND_RANGE = 7
@@ -16,11 +16,11 @@ class DirectoryHelper():
     def __init__(self, target_dir=None):
 
         if target_dir:
-            self.current_dir = target_dir + '\\'
+            self.current_dir = target_dir + os.sep
         else:
-            self.current_dir = os.path.dirname(os.path.abspath(__file__)) + '\\'
+            self.current_dir = os.path.dirname(os.path.abspath(__file__)) + os.sep
 
-        self.temp_dir = self.current_dir + TEMP_DIRECTORY + '\\'
+        self.temp_dir = os.path.join(self.current_dir, TEMP_DIRECTORY)
 
     def clear_directory(self, directory):
         """
@@ -116,7 +116,7 @@ class DirectoryHelper():
         """
             (obj, str) -> (str)
 
-            Generate file name
+            Generates file name
         """
 
         rand_path_range = ''.join(random.choice(string.ascii_lowercase + string.digits) for x in range(RAND_RANGE))

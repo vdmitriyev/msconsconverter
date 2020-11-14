@@ -1,4 +1,13 @@
+# folder
+.venv/*
+/data/__temp__/*
+msconsconverter/__pycache__/*
+
+# file 
+README.html
+cmdInitiateEnv.bat
+
+# extentions
 *.pyc
 *.csv
-/data/__temp__/*
 *.log

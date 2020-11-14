@@ -3,24 +3,22 @@
 
 __author__ = 'Viktor Dmitriyev'
 __license__ = 'MIT'
-__version__ = '1.0.0'
-__maintainer__ = '-'
-__email__ = ''
-__status__ = 'dev'
-__date__ = '05.02.2016'
-__description__ = 'MSCONS (EDIFACT) format converter (to CSV).'
+__version__ = '1.1.0'
+__updated__ = '14.11.2020'
+__description__ = 'MSCONS (EDIFACT) format converter (output: CSV)'
 
 import os
 import sys
 import time
 import uuid
+from sys import platform
 from docopt import docopt
 from pprint import pprint
 from datetime import datetime
 from directory_helper import DirectoryHelper
 
 # set 'True' for debugging (stdout will be more verbose)
-DEBUG = False
+DEBUG = True
 VERIFY = True
 
 # CONSTANTS
@@ -31,7 +29,7 @@ class MSCONSConverter():
 
     def __init__(self, target_dir=None):
 
-        if DEBUG: print ('[i] class "MSCONSConverter" created')
+        if DEBUG: print('[i] class "MSCONSConverter" created')
 
         self.helper = DirectoryHelper(target_dir=target_dir)
         self.helper.prepare_working_directory()
@@ -44,10 +42,10 @@ class MSCONSConverter():
             Converting from Python dict to predefined CSV format.
         """
 
-        new_file_name = '{0}{1}-{2}'.format(self.temp_dir,
-                                            CSV_FILE_PREFIX,
-                                            self.helper.gen_file_name(extention='.csv'))
-        csv = open(new_file_name, "w")
+        new_file_name = '{0}-{1}'.format(CSV_FILE_PREFIX, self.helper.gen_file_name(extention='.csv'))
+        new_file_name_path = os.path.join(self.temp_dir, new_file_name)
+
+        csv = open(new_file_name_path, "w")
         csv.write(CSV_DELIMITER.join(csv_header_values) + '\n')
         header_size = len(csv_header_values)
 
@@ -100,7 +98,7 @@ class MSCONSConverter():
 
         csv.close()
 
-        if DEBUG: print('[i] parsing results saved into file "{0}"'.format(new_file_name))
+        if DEBUG: print('[i] parsing results saved into file "{0}"'.format(new_file_name_path))
 
 
     def parse_mscons(self, file_name):
@@ -153,7 +151,7 @@ class MSCONSConverter():
 
             if token.startswith('LOC'):
                 subtoken = token.split(ELEMENT_SEPARATOR)
-                if DEBUG: print subtoken
+                if DEBUG: print(subtoken)
                 if subtoken[1] == '172':
                     mscons_dict['loc_mscons'] = subtoken[2]
 
@@ -228,12 +226,10 @@ class Logger(object):
         pass
 
 def main(folder=None, files=None):
-    """ Creating classes and running methods"""
+    """ Creates classes and runs methods"""
 
     if not files:
-        files = [
-                 'MSCONS_TL_SAMPLE01.txt'
-                ]
+        files = ['MSCONS_TL_SAMPLE01.txt']
 
     if not folder:
         folder = '../data'
@@ -241,26 +237,27 @@ def main(folder=None, files=None):
     obj = MSCONSConverter(target_dir=folder)
 
     for _file in files:
-        if DEBUG: print ('[i] processing file {0}'.format(_file))
-        obj.convert_to_csv(file_name = folder + '/' + _file,
-                            csv_header_values = ['LOC_MSCONS',
-                                          'LOC_PLZ',
-                                          'LOC_EEGKEY',
-                                          'DATE_PERIOD_START',
-                                          'YEAR_PS',
-                                          'MONTH_PS',
-                                          'DAY_PS',
-                                          'HOUR_PS',
-                                          'MINUTE_PS',
-                                          'UTC_PS',
-                                          'DATE_PERIOD_END',
-                                          'YEAR_PE',
-                                          'MONTH_PE',
-                                          'DAY_PE',
-                                          'HOUR_PE',
-                                          'MINUTE_PE',
-                                          'UTC_PE',
-                                          'VALUE'])
+        full_path = os.path.join(folder, _file)
+        if DEBUG: print ('[i] processing file {0}'.format(full_path))
+        obj.convert_to_csv(file_name = full_path,
+                           csv_header_values = ['LOC_MSCONS',
+                                                'LOC_PLZ',
+                                                'LOC_EEGKEY',
+                                                'DATE_PERIOD_START',
+                                                'YEAR_PS',
+                                                'MONTH_PS',
+                                                'DAY_PS',
+                                                'HOUR_PS',
+                                                'MINUTE_PS',
+                                                'UTC_PS',
+                                                'DATE_PERIOD_END',
+                                                'YEAR_PE',
+                                                'MONTH_PE',
+                                                'DAY_PE',
+                                                'HOUR_PE',
+                                                'MINUTE_PE',
+                                                'UTC_PE',
+                                                'VALUE'])
 
 if __name__ == '__main__':
 
@@ -286,9 +283,14 @@ if __name__ == '__main__':
 
     opts = docopt(__help__)
 
-    input_folder = opts["<input_folder>"][1:-1]
-    files = opts["<files>"][1:-1].split(',')
-    print files
+    if platform == "linux" or platform == "linux2":
+        input_folder = opts["<input_folder>"]
+        files = opts["<files>"].split(',')
+    elif platform == "win32":
+        input_folder = opts["<input_folder>"][1:-1]
+        files = opts["<files>"][1:-1].split(',')
+
+    print (files)
 
     # running sample
     if opts["--sample"]:
@@ -302,6 +304,3 @@ if __name__ == '__main__':
         sys.stdout = Logger()
 
     main(folder=input_folder, files=files)
-
-
-
