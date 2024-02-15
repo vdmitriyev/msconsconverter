@@ -1,11 +1,11 @@
 ### About
 
-Converting data from MSCONS (EDIFACT) format to CSV.
+Converts MSCONS (EDIFACT) format in CSV.
 
 ### Dependencies Overview
 
 * Python > 3.6
-* docopt
+* docopt==0.6.2
 
 ### Install Dependencies
 

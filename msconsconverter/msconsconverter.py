@@ -3,9 +3,9 @@
 
 __author__ = 'Viktor Dmitriyev'
 __license__ = 'MIT'
-__version__ = '1.1.0'
+__version__ = '1.2.0'
 __updated__ = '14.11.2020'
-__description__ = 'MSCONS (EDIFACT) format converter (output: CSV)'
+__description__ = 'Converts MSCONS (EDIFACT) format in CSV'
 
 import os
 import sys

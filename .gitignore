@@ -2,6 +2,9 @@
 .venv/*
 /data/__temp__/*
 msconsconverter/__pycache__/*
+build/*
+dist/*
+msconsconverter.egg-info/*
 
 # file 
 README.html
@@ -10,9 +13,6 @@ cmdInitiateEnv.bat
 # extentions
 *.pyc
 *.csv
-<<<<<<< HEAD
-*.log
-=======
 /data/__temp__/*
 *.log
 
