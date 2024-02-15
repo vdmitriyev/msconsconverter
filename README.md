@@ -12,10 +12,12 @@ Converting data from MSCONS (EDIFACT) format to CSV.
 ```
 pip install -r requirements.txt
 ```
+* Or use ```scripts/cmdInitiateEnv.bat```
 
 ### Usage
 
 ```
+cd msconsconverter
 # providing data folder and data files as input
 python msconsconverter.py '../data/' 'MSCONS_TL_SAMPLE01.txt,MSCONS_TL_SAMPLE02.txt' --verbose
 
