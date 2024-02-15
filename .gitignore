@@ -10,4 +10,11 @@ cmdInitiateEnv.bat
 # extentions
 *.pyc
 *.csv
+<<<<<<< HEAD
 *.log
+=======
+/data/__temp__/*
+*.log
+
+# PyCharm
+.idea

@@ -2,10 +2,12 @@
 
 Converting data from MSCONS (EDIFACT) format to CSV.
 
-### Dependencies
+### Dependencies Overview
 
-* Python 2.7, 3.8
+* Python > 3.6
 * docopt
+
+### Install Dependencies
 
 ```
 pip install -r requirements.txt
@@ -23,7 +25,7 @@ python msconsconverter.py --sample
 
 #### Usage on Ubuntu
 
-* Preparation and start
+* Preparation and start (for further details see ```msconsconverter/run.sh```)
 ```
 cd msconsconverter
 apt-get install dos2unix -y
@@ -31,9 +33,8 @@ dos2unix run.sh
 chmod +x run.sh
 ./run.sh
 ```
-* For details see ```run.sh```
 
-### Materials MSCONS (EDIFACT)
+### Materials on MSCONS (EDIFACT)
 
 * [EDIFACT - English](https://en.wikipedia.org/wiki/EDIFACT)
 * [EDIFACT - German](https://de.wikipedia.org/wiki/EDIFACT)

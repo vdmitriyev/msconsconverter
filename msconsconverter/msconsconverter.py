@@ -15,7 +15,7 @@ from sys import platform
 from docopt import docopt
 from pprint import pprint
 from datetime import datetime
-from directory_helper import DirectoryHelper
+from .directory_helper import DirectoryHelper
 
 # set 'True' for debugging (stdout will be more verbose)
 DEBUG = True
@@ -92,7 +92,8 @@ class MSCONSConverter():
                    header_size == (tmp_len + validity_shift):
                    pass
                 else:
-                    print('[e] check CSV merger header (elements = {0}) does not equals to constructed row (elements = {1})'.format(header_size, tmp_len))
+                    raise RuntimeError('[e] check CSV merger header (elements = {0}) does not equals to constructed row (elements = {1})'.format(header_size, tmp_len))
+
 
             csv.write(tmp_line)
 
@@ -280,9 +281,9 @@ if __name__ == '__main__':
           --sample      Will ignore all given options and try to run sample.
           --verbose     If given, debug output is also writen to the stdout.
           """
-
+		  
     opts = docopt(__help__)
-
+	
     if platform == "linux" or platform == "linux2":
         input_folder = opts["<input_folder>"]
         files = opts["<files>"].split(',')
