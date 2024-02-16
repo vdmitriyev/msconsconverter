@@ -23,7 +23,7 @@ def get_install_requires(fname: str = "requirements.txt"):
 
 setup(
     name="msconsconverter",
-    version="1.2.0",
+    version="1.0.0",
     author="vdmitriyev",
     description="Converts MSCONS (EDIFACT) format in CSV",
     long_description=get_long_description(),
@@ -35,7 +35,7 @@ setup(
         "License :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     install_requires=get_install_requires("requirements.txt"),
 	test_suite='tests'
 )
