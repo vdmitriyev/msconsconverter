@@ -43,7 +43,7 @@ class MSCONSConverter:
 
         # parsing results evaluation
         if (loc_mscons) != (loc_mscons[:8] + loc_mscons_plz + loc_mscons_eegkey):
-            print("[e] wrong parsing of LOC")
+            self.logger.error("wrong parsing of LOC")
 
         def parse_date_to_csv(input_date, format_date="303"):
             """Parsing data only for '303' MSCONS format"""
@@ -82,7 +82,7 @@ class MSCONSConverter:
                     pass
                 else:
                     raise RuntimeError(
-                        "[e] check CSV merger header (elements = {0}) does not equals to constructed row (elements = {1})".format(
+                        "check CSV merger header (elements = {0}) does not equals to constructed row (elements = {1})".format(
                             header_size, tmp_len
                         )
                     )
