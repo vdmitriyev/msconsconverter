@@ -7,34 +7,42 @@ Converts MSCONS (EDIFACT) format in CSV.
 * Python > 3.6
 * docopt==0.6.2
 
-### Install Dependencies
-
+### Clone and Install Dependencies
+* Clone repo
+```
+git clone https://github.com/vdmitriyev/msconsconverter
+```
+* Install dependencies
 ```
 pip install -r requirements.txt
+#pip install -r requirements-dev.txt
 ```
 * Or use ```scripts/cmdInitiateEnv.bat```
 
 ### Usage
 
+* Convert
 ```
-cd msconsconverter
-# providing data folder and data files as input
-python msconsconverter.py '../data/' 'MSCONS_TL_SAMPLE01.txt,MSCONS_TL_SAMPLE02.txt' --verbose
-
-# running sample
-python msconsconverter.py --sample
+# providing data directory input
+python -m msconsconverter convert --directory tests/data --output-directory tests/data/output 
 ```
 
-#### Usage on Ubuntu
+* Convert in verbose/debug mode
+```
+# providing data directory input
+python -m msconsconverter convert --debug --directory tests/data --output-directory tests/data/output 
+```
+* Get help
+```
+python -m msconsconverter convert --help
+```
 
-* Preparation and start (for further details see ```msconsconverter/run.sh```)
+### Run Tests
+
 ```
-cd msconsconverter
-apt-get install dos2unix -y
-dos2unix run.sh
-chmod +x run.sh
-./run.sh
+python -m pytest -s
 ```
+
 
 ### Materials on MSCONS (EDIFACT)
 

@@ -25,12 +25,11 @@ setup(
     name="msconsconverter",
     version="1.2.0",
     author="vdmitriyev",
-    author_email="author@example.com",
     description="Converts MSCONS (EDIFACT) format in CSV",
     long_description=get_long_description(),
     long_description_content_type="text/markdown",
     url="https://github.com/vdmitriyev/msconsconverter",
-    packages=find_packages(exclude=["data"]),
+    packages=find_packages(exclude=["data"], include=["msconsconverter"]),
     classifiers=[
         "Programming Language :: Python :: 3 :: Only",
         "License :: MIT License",
@@ -38,4 +37,5 @@ setup(
     ],
     python_requires=">=3.6",
     install_requires=get_install_requires("requirements.txt"),
+	test_suite='tests'
 )

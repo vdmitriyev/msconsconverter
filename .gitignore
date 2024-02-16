@@ -1,10 +1,13 @@
 # folder
 .venv/*
-/data/__temp__/*
+data/__temp__/*
+tests/data/__temp__/*
+tests/data/output/*
 msconsconverter/__pycache__/*
+msconsconverter.egg-info/*
 build/*
 dist/*
-msconsconverter.egg-info/*
+.tox/*
 
 # file 
 README.html
