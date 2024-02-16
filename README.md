@@ -15,22 +15,26 @@ git clone https://github.com/vdmitriyev/msconsconverter
 * Install dependencies
 ```
 pip install -r requirements.txt
-#pip install -r requirements-dev.txt
+```
+* Install dependencies (dev)
+```
+pip install -r requirements-dev.txt
 ```
 * Or use ```scripts/cmdInitiateEnv.bat```
 
 ### Usage
 
-* Convert
+* Convert by providing a directory with data as input
 ```
-# providing data directory input
 python -m msconsconverter convert --directory tests/data --output-directory tests/data/output 
 ```
-
-* Convert in verbose/debug mode
+* Convert by providing a directory with data as input in a verbose/debug mode
 ```
-# providing data directory input
 python -m msconsconverter convert --debug --directory tests/data --output-directory tests/data/output 
+```
+* Convert by providing a file with data as input in a verbose/debug mode
+```
+python -m msconsconverter convert --debug --file tests/data/MSCONS_TL_SAMPLE01.txt --output-directory tests/data/output
 ```
 * Get help
 ```
