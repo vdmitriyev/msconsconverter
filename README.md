@@ -5,7 +5,7 @@ Converts MSCONS (EDIFACT) format in CSV.
 ### Dependencies Overview
 
 * Python > 3.6
-* docopt==0.6.2
+* + ```requirements.txt```
 
 ### Clone and Install Dependencies
 * Clone repo
