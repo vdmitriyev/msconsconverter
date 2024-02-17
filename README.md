@@ -1,11 +1,11 @@
 ### About
 
-Converts MSCONS (EDIFACT) format in CSV.
+Converts MSCONS (EDIFACT) to CSV.
 
 ### Dependencies Overview
 
 * Python > 3.7
-* + ```requirements.txt```
+* ```requirements.txt```
 
 ### Clone and Install Dependencies
 * Clone repo
@@ -59,4 +59,4 @@ python -m pytest -s
 
 ### License
 
-[MIT](LICENSE)
+MIT License

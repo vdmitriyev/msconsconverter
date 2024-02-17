@@ -38,7 +38,7 @@ def cli():
 )
 @click.option("--debug", is_flag=True, show_default=False, default=False, help="Runs in debug mode")
 def convert(file: str, directory: str, output_directory: str, debug: bool):
-    """MSCONS (EDIFACT) format converter (to CSV)"""
+    """Converts MSCONS (EDIFACT) to CSV"""
 
     if not (file or directory):
         raise click.UsageError("At least one of --file or --directory must be provided.")

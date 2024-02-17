@@ -1,6 +1,5 @@
-__author__ = "Viktor Dmitriyev"
 __license__ = "MIT"
-__description__ = "Converts MSCONS (EDIFACT) format in CSV"
+__description__ = "Converts MSCONS (EDIFACT) to CSV"
 
 from msconsconverter.msconsconverter import *
 
