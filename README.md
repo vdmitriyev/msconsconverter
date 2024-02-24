@@ -12,11 +12,11 @@ pip install --index-url https://test.pypi.org/simple/ msconsconverter
 
 * Convert by providing a directory with data as input
 ```
-python -m msconsconverter convert --directory tests/data --output-directory tests/data/output
+python -m msconsconverter convert --input-directory tests/data --output-directory tests/data/output
 ```
 * Convert by providing a directory with data as input in a verbose/debug mode
 ```
-python -m msconsconverter convert --debug --directory tests/data --output-directory tests/data/output
+python -m msconsconverter convert --debug --input-directory tests/data --output-directory tests/data/output
 ```
 * Convert by providing a file with data as input in a verbose/debug mode
 ```

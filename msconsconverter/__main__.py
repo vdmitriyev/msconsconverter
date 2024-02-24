@@ -17,6 +17,7 @@ def cli():
 
 @cli.command()
 @click.option(
+    "-f",
     "--file",
     prompt=False,
     required=False,
@@ -24,26 +25,28 @@ def cli():
     help="Path to a single MSCONS file",
 )
 @click.option(
-    "--directory",
+    "-id",
+    "--input-directory",
     prompt=False,
     required=False,
     type=click.Path(exists=True),
     help="Directory with MSCONS data",
 )
 @click.option(
+    "-od",
     "--output-directory",
     prompt=False,
     required=True,
     help="Directory to output CSV file",
 )
 @click.option("--debug", is_flag=True, show_default=False, default=False, help="Runs in debug mode")
-def convert(file: str, directory: str, output_directory: str, debug: bool):
+def convert(file: str, input_directory: str, output_directory: str, debug: bool):
     """Converts MSCONS (EDIFACT) to CSV"""
 
-    if not (file or directory):
-        raise click.UsageError("At least one of --file or --directory must be provided.")
-    elif file and directory:
-        raise click.UsageError("Only one of --file or --directory must be provided.")
+    if not (file or input_directory):
+        raise click.UsageError("At least one of --file or --input-directory must be provided.")
+    elif file and input_directory:
+        raise click.UsageError("Only one of --file or --input-directory must be provided.")
 
     _logger, custom_logger = None, CustomLogger()
 
@@ -54,8 +57,8 @@ def convert(file: str, directory: str, output_directory: str, debug: bool):
 
     if file is not None:
         convert_single(filename=file, target_dir=output_directory, logger=_logger)
-    elif directory is not None:
-        convert_batch(directory=directory, target_dir=output_directory, logger=_logger)
+    elif input_directory is not None:
+        convert_batch(directory=input_directory, target_dir=output_directory, logger=_logger)
     else:
         click.echo("No parameters provided. Nothing to convert")
 

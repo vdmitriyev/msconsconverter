@@ -1,14 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sys
-import time
-import uuid
 from datetime import datetime
 from pprint import pprint
 
-from msconsconverter.constants import CSV_DELIMITER, CSV_FILE_PREFIX, DEBUG, VERIFY
-from msconsconverter.directory_helper import gen_file_name
+from msconsconverter.constants import CSV_DELIMITER, CSV_FILE_PREFIX, VERIFY
+from msconsconverter.helpers import gen_file_name
 from msconsconverter.logger import CustomLogger
 
 
@@ -30,7 +27,7 @@ class MSCONSConverter:
         Converting from Python dict to predefined CSV format.
         """
 
-        new_file_name = "{0}-{1}".format(CSV_FILE_PREFIX, gen_file_name(extention=".csv"))
+        new_file_name = "{0}-{1}".format(CSV_FILE_PREFIX, gen_file_name(extension=".csv"))
         new_file_name_path = os.path.join(self.target_dir, new_file_name)
 
         csv = open(new_file_name_path, "w")
