@@ -9,7 +9,7 @@ build/*
 dist/*
 .tox/*
 
-# file 
+# file
 README.html
 cmdInitiateEnv.bat
 
