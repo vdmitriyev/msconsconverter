@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
-
 import os
 from datetime import datetime
-from pprint import pprint
 
 from msconsconverter.constants import CSV_DELIMITER, CSV_FILE_PREFIX, VERIFY
+from msconsconverter.exceptions import EntryHeaderCSVConflict
 from msconsconverter.helpers import gen_file_name
 from msconsconverter.logger import CustomLogger
 
@@ -20,11 +18,15 @@ class MSCONSConverter:
 
         self.target_dir = target_dir
 
-    def to_csv(self, data, csv_header_values):
-        """
-        (obj, str) -> list()
+    def to_csv(self, data: dict, csv_header_values: list):
+        """Converting from Python dict to predefined CSV format.
 
-        Converting from Python dict to predefined CSV format.
+        Args:
+            data (dict): data to be saved
+            csv_header_values (list): header of CSV file
+
+        Raises:
+            RuntimeError: _description_
         """
 
         new_file_name = "{0}-{1}".format(CSV_FILE_PREFIX, gen_file_name(extension=".csv"))
@@ -32,75 +34,42 @@ class MSCONSConverter:
 
         csv = open(new_file_name_path, "w")
         csv.write(CSV_DELIMITER.join(csv_header_values) + "\n")
-        header_size = len(csv_header_values)
 
-        loc_mscons = data["loc_mscons"]
-        loc_mscons_plz = loc_mscons[8:13]
-        loc_mscons_eegkey = loc_mscons[-20:]
-
-        # parsing results evaluation
-        if (loc_mscons) != (loc_mscons[:8] + loc_mscons_plz + loc_mscons_eegkey):
-            self.logger.error("wrong parsing of LOC")
-
-        def parse_date_to_csv(input_date, format_date="303"):
-            """Parsing data only for '303' MSCONS format"""
-
-            if format_date == "303":
-                year = input_date[0:4]
-                month = input_date[4:6]
-                day = input_date[6:8]
-                hour = input_date[8:10]
-                minute = input_date[10:12]
-                utc = input_date[12:]
-                return '"{1}"{0}"{2}"{0}"{3}"{0}"{4}"{0}"{5}"{0}"{6}"{0}"{7}"'.format(
-                    CSV_DELIMITER, input_date, year, month, day, hour, minute, utc
+        for loc_mscons in data["loc_mscons"]:
+            loc_mscons_plz = loc_mscons[8:13]
+            loc_mscons_eegkey = loc_mscons[-20:]
+            # parsing results evaluation
+            loc_to_expect = loc_mscons[:8] + loc_mscons_plz + loc_mscons_eegkey
+            if loc_mscons != loc_to_expect:
+                self.logger.warning(
+                    f"unexpected customized LOC format, excepted: {loc_mscons} ; found: {loc_to_expect}"
                 )
-            else:
-                print("[e] only parses date that is in 303 format specification")
 
-            return None
+            tmp_line = ""
+            for item in data["qty"][loc_mscons]:
 
-        tmp_line = ""
-        for item in data["qty"]:
-            tmp_line = '"{0}"{1}'.format(loc_mscons, CSV_DELIMITER)
-            tmp_line += '"{0}"{1}'.format(loc_mscons_plz, CSV_DELIMITER)
-            tmp_line += '"{0}"{1}'.format(loc_mscons_eegkey, CSV_DELIMITER)
-            tmp_line += "{0}{1}".format(parse_date_to_csv(item[1]), CSV_DELIMITER)
-            tmp_line += "{0}{1}".format(parse_date_to_csv(item[2]), CSV_DELIMITER)
-            tmp_line += '"{0}"'.format(item[0])
-            tmp_line += "\n"
+                tmp_line = '"{0}"{1}'.format(loc_mscons, CSV_DELIMITER)
+                tmp_line += '"{0}"{1}'.format(loc_mscons_plz, CSV_DELIMITER)
+                tmp_line += '"{0}"{1}'.format(loc_mscons_eegkey, CSV_DELIMITER)
+                tmp_line += "{0}{1}".format(self.__parse_date_to_csv(item[1]), CSV_DELIMITER)
+                tmp_line += "{0}{1}".format(self.__parse_date_to_csv(item[2]), CSV_DELIMITER)
+                tmp_line += '"{0}"'.format(item[0])
+                tmp_line += "\n"
 
-            if VERIFY:
-                tmp_len = len(tmp_line.split(CSV_DELIMITER))
-                validity_shift = 0
-                if CSV_DELIMITER == self.MSCONS_DECIMAL_MARK:
-                    validity_shift = -1
-                if header_size == tmp_len or header_size == (tmp_len + validity_shift):
-                    pass
-                else:
-                    raise RuntimeError(
-                        "check CSV merger header (elements = {0}) does not equals to constructed row (elements = {1})".format(
-                            header_size, tmp_len
-                        )
-                    )
+                if VERIFY:
+                    self.__verify_single_entry(tmp_line, csv_header_values)
 
-            csv.write(tmp_line)
+                csv.write(tmp_line)
 
         csv.close()
 
         self.logger.debug(f'parsing results saved into file": {new_file_name_path}')
 
     def parse_mscons(self, file_name: str):
-        """Parsing MSCONS format"""
+        """Parses MSCONS format"""
 
-        mscons_data = ""
         mscons_dict = {}
-        mscons_dict["qty"] = []
-
-        read_file = open(file_name, "r")
-        for line in read_file.readline():
-            mscons_data += line
-        read_file.close()
+        mscons_data = self.__read_file_content(file_name)
 
         self.logger.debug("identified special characters of MSCONS")
 
@@ -126,7 +95,7 @@ class MSCONSConverter:
             f"""\nspecial symbols that will be used
             COMPONENT_SEPARATOR {COMPONENT_SEPARATOR}
             ELEMENT_SEPARATOR {ELEMENT_SEPARATOR}
-            DECIMAL_MARK {DECIMAL_MARK}
+            DECIMAL_MARK {self.MSCONS_DECIMAL_MARK}
             RELEASE_SYMBOL {RELEASE_SYMBOL}
             SEGMENTAION_SYMBOL {SEGMENTAION_SYMBOL}"""
         )
@@ -136,14 +105,19 @@ class MSCONSConverter:
         start_saving = False
         save_cur_qty_value = False
 
-        # main pricing
-        for token in mscons_tokens:
+        current_loc = None
 
+        for index, token in enumerate(mscons_tokens):
             if token.startswith("LOC"):
                 subtoken = token.split(ELEMENT_SEPARATOR)
                 self.logger.debug(subtoken)
                 if subtoken[1] == "172":
-                    mscons_dict["loc_mscons"] = subtoken[2]
+                    if "loc_mscons" not in mscons_dict:
+                        mscons_dict["loc_mscons"] = list()
+                    mscons_dict["loc_mscons"].append(subtoken[2])
+                    current_loc = subtoken[2]
+
+                self.logger.debug(f"Found LOC token {subtoken} at line: {index}")
 
             if token.startswith("PIA"):
                 self.logger.warning("PIA was found, but ignored")
@@ -172,8 +146,11 @@ class MSCONSConverter:
                     self.logger.warning("different date format")
 
             if save_cur_qty_value and start_saving:
-                save_cur_values = False
-                mscons_dict["qty"].append((cur_qty, cur_date_period_start, cur_date_period_end))
+                if "qty" not in mscons_dict:
+                    mscons_dict["qty"] = {}
+                if current_loc not in mscons_dict["qty"]:
+                    mscons_dict["qty"][current_loc] = list()
+                mscons_dict["qty"][current_loc].append((cur_qty, cur_date_period_start, cur_date_period_end))
 
         return mscons_dict
 
@@ -190,3 +167,70 @@ class MSCONSConverter:
         self.logger.debug("saving data to CSV")
 
         self.to_csv(mscons, csv_header_values)
+
+    def __parse_date_to_csv(self, input_date: str, format_date: str = "303") -> str:
+        """Parsing data only for '303' MSCONS format
+
+        Args:
+            input_date (str): date to per parsed
+            format_date (str, optional): format of the date. Defaults to "303".
+
+        Returns:
+            str: _description_
+        """
+
+        if format_date == "303":
+            year = input_date[0:4]
+            month = input_date[4:6]
+            day = input_date[6:8]
+            hour = input_date[8:10]
+            minute = input_date[10:12]
+            utc = input_date[12:]
+            return '"{1}"{0}"{2}"{0}"{3}"{0}"{4}"{0}"{5}"{0}"{6}"{0}"{7}"'.format(
+                CSV_DELIMITER, input_date, year, month, day, hour, minute, utc
+            )
+        else:
+            self.logger.error("only parses date that is in 303 format specification")
+
+        return None
+
+    def __verify_single_entry(self, entry_line: str, csv_header_values: list) -> None:
+        """Verifies consistency of each single CSV line on creation
+
+        Args:
+            entry_line (str): line to be saved into CSV
+            csv_header_values (list): list of headers to be used for CSV
+
+        Raises:
+            EntryHeaderCSVConflict: raised if non-consistent
+        """
+
+        header_size = len(csv_header_values)
+        tmp_len = len(entry_line.split(CSV_DELIMITER))
+        validity_shift = 0
+
+        if CSV_DELIMITER == self.MSCONS_DECIMAL_MARK:
+            validity_shift = -1
+        if header_size == tmp_len or header_size == (tmp_len + validity_shift):
+            pass
+        else:
+            raise EntryHeaderCSVConflict(
+                f"check CSV merger header (elements = {header_size}) does not equals to constructed row (elements = {tmp_len})"
+            )
+
+    def __read_file_content(self, file_name: str) -> str:
+        """Reads file content line by line
+
+        Args:
+            file_name (str): file name
+
+        Returns:
+            str: content of the file
+        """
+        mscons_data = ""
+        read_file = open(file_name, "r")
+        for line in read_file.readline():
+            mscons_data += line
+        read_file.close()
+
+        return mscons_data

@@ -2,15 +2,14 @@
 
 Converts MSCONS (EDIFACT) to CSV.
 
-## Installation (Test)
+## Installation (TestPyPI)
 
 ```
-pip install --index-url https://test.pypi.org/simple/ msconsconverter
+pip install --index-url https://test.pypi.org/simple/ --upgrade msconsconverter
 ```
 
-## Usage
+## Usage: CLI
 
-* Convert by providing a directory with data as input
 ```
 python -m msconsconverter convert --input-directory tests/data --output-directory tests/data/output
 ```
@@ -20,34 +19,33 @@ python -m msconsconverter convert --debug --input-directory tests/data --output-
 ```
 * Convert by providing a file with data as input in a verbose/debug mode
 ```
-python -m msconsconverter convert --debug --file tests/data/MSCONS_TL_SAMPLE01.txt --output-directory tests/data/output
+python -m msconsconverter convert --debug --input-file tests/data/MSCONS_TL_SAMPLE01.txt --output-directory tests/data/output
 ```
 * Get help
 ```
 python -m msconsconverter convert --help
 ```
 
-## HowTo: Development
+## Development: HowTo
 
-### Dependencies Overview
+#### Dependencies: Overview
 
 * Python > 3.7
-* ```requirements.txt```
+* requirements.txt
 
-### Clone and Install Dependencies
+#### Dependencies: Clone and Install Dependencies
 
 * Clone repo
 ```
 git clone https://github.com/vdmitriyev/msconsconverter
 ```
-* Install dependencies
+* Install dependencies or use ```scripts/cmdInitiateEnv.bat```
 ```
 pip install -r requirements.txt
 pip install -r requirements-dev.txt
 ```
-* Or use ```scripts/cmdInitiateEnv.bat```
 
-### Run Tests
+#### Run Tests
 
 ```
 python -m pytest -s

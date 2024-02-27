@@ -12,7 +12,7 @@ def convert_single(filename: str, target_dir: str, logger: CustomLogger) -> None
 
     obj = MSCONSConverter(target_dir=target_dir, logger=logger)
 
-    logger.info(f"processing file: {filename}")
+    logger.info(f"start processing file: {filename}")
 
     obj.convert_to_csv(
         file_name=filename,
@@ -38,6 +38,8 @@ def convert_single(filename: str, target_dir: str, logger: CustomLogger) -> None
         ],
     )
 
+    logger.info(f"finish processing file: {filename}\n")
+
 
 def convert_batch(directory: str, target_dir: str, logger: CustomLogger):
     """Converts all files within the directory"""
@@ -51,7 +53,7 @@ def convert_batch(directory: str, target_dir: str, logger: CustomLogger):
         full_path = os.path.join(directory, file_name)
 
         if os.path.isfile(full_path):
-            logger.info(f"processing file: {full_path}")
+            logger.info(f"start processing file: {full_path}")
             obj.convert_to_csv(
                 file_name=full_path,
                 csv_header_values=[
@@ -75,3 +77,4 @@ def convert_batch(directory: str, target_dir: str, logger: CustomLogger):
                     "VALUE",
                 ],
             )
+            logger.info(f"finish processing file: {full_path}\n")

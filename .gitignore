@@ -12,6 +12,7 @@ dist/*
 # file
 README.html
 cmdInitiateEnv.bat
+output.txt
 
 # extentions
 *.pyc
@@ -21,3 +22,6 @@ cmdInitiateEnv.bat
 
 # PyCharm
 .idea
+
+# VS Code
+.vscode/*
