@@ -28,8 +28,6 @@ python -m msconsconverter convert --help
 
 ## Usage: CLI --help example
 
-![alt text](docs/cli-image.png)
-
 ![](https://raw.githubusercontent.com/vdmitriyev/msconsconverter/master/docs/cli-image.png)
 
 ## Development: HowTo
