@@ -8,7 +8,6 @@ vars:
   PYVENV_PROMNT: "(.venv)"
   NEW_PATH: "{{.PYVENV_PATH}};{{.PATH}}"
 
-
 env:
   PATH: "{{.NEW_PATH}}"
   NEW_PATH: "{{.NEW_PATH}}"
@@ -24,7 +23,7 @@ tasks:
     cmds:
       - echo 'Use instead "scripts/cmdInitiateEnv.bat"'
 
-  active-env:
+  activate-env:
     silent: true
     deps: [workaround-infos]
     cmds:

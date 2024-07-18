@@ -2,17 +2,28 @@ version: '3'
 
 vars:
   PACKAGE_NAME: "msconsconverter"
+  PACKAGE_VERSION:
+    sh:
+        python -c "import importlib.metadata; print(importlib.metadata.version('{{.PACKAGE_NAME}}'))"
+  VENV_DIR: ".venv"
 
 includes:
   win: ./Taskfile_windows.yml
 
 tasks:
+  default:
+    silent: true
+    cmds:
+      - task --list-all
+      - echo ""
+      - echo "Example usage-> 'task check-virtualenv'"
 
   check-virtualenv:
     silent: true
+    run: once
     cmds:
-      - echo "Check .env folder"
-      - test -d .venv
+      - echo "Check existence of a virtual directory-> {{.VENV_DIR}}"
+      - test -d {{.VENV_DIR}}
       - echo -n "Check if virtual environment is active-> " && python -c "import sys; print('virtualenv is active' if sys.prefix != sys.base_prefix else 'virtualenv is NOT active')"
       - python -c "import sys; exit(1 if sys.prefix == sys.base_prefix else 0)"
       - python --version
@@ -51,10 +62,12 @@ tasks:
       - rm -fr htmlcov/
       - rm -fr .pytest_cache
 
-  run-help:
+  package-help:
     deps: [check-virtualenv]
     cmds:
-      - python -m msconsconverter --help
+      - echo 'package version {{.PACKAGE_VERSION}}'
+      - python -m pymultissher --help
+
 
   dev-install:
     deps: [check-virtualenv]
@@ -66,6 +79,47 @@ tasks:
     deps: [check-virtualenv]
     cmds:
       - pip uninstall {{.PACKAGE_NAME}}
+
+  dev-pre-commit:
+    deps: [check-virtualenv]
+    cmds:
+      - pre-commit run --all-files
+
+  dev-tag-version:
+    deps: [check-virtualenv]
+    cmds:
+      - task: build
+      - echo  {{.PACKAGE_VERSION}}
+
+  dev-tag-create:
+    vars:
+        PACKAGE_VERSION:
+            sh:
+                python -c "import importlib.metadata; print(importlib.metadata.version('{{.PACKAGE_NAME}}'))"
+    deps: [check-virtualenv]
+    cmds:
+      - task: build
+      - git tag {{.PACKAGE_VERSION}}
+      - task: dev-tag-describe
+
+  dev-tag-re-create:
+    deps: [check-virtualenv]
+    cmds:
+      - git tag -d {{.PACKAGE_VERSION}}
+      - task: dev-tag-create
+
+  dev-tag-describe:
+    deps: [check-virtualenv]
+    cmds:
+      - echo "git tags"
+      - git tag
+      - echo "latest git tags"
+      - git describe --tags --abbrev=0
+
+  dev-tag-push:
+    deps: [check-virtualenv]
+    cmds:
+        - git push --tags origin
 
   build:
     deps: [check-virtualenv]
