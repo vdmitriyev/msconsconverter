@@ -36,7 +36,7 @@ jobs:
 
     environment:
       name: testpypi
-      url: https://test.pypi.org/p/pymultissher
+      url: https://test.pypi.org/p/msconsconverter
 
     permissions:
       id-token: write  # IMPORTANT: mandatory for trusted publishing
