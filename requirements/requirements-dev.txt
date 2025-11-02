@@ -2,7 +2,7 @@ wheel==0.43.0
 bump-my-version==0.24.2
 wheel==0.43.0
 tox==4.16.0
-twine==5.1.1
+twine==6.2.0
 pytest==8.0.0
 black==24.4.2
 isort==6.0.0b2

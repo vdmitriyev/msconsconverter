@@ -8,10 +8,12 @@ vars:
   VENV_DIR: ".venv"
 
 includes:
-  win: ./Taskfile_windows.yml
+    git: ./taskfiles/Taskfile_git.yml
+    precommit: ./taskfiles/Taskfile_pre_commit.yml
 
 tasks:
   default:
+    desc: lists all tasks
     silent: true
     cmds:
       - task --list-all
@@ -19,6 +21,8 @@ tasks:
       - echo "Example usage-> 'task check-virtualenv'"
 
   check-virtualenv:
+    desc: checks Python's virtualenv activation
+    aliases: [cv]
     silent: true
     run: once
     cmds:
@@ -28,15 +32,19 @@ tasks:
       - python -c "import sys; exit(1 if sys.prefix == sys.base_prefix else 0)"
       - python --version
 
-  clean-all:
+  clean:
+    desc: cleans all files
     deps: [check-virtualenv]
+    silent: true
     cmds:
       - task: clean-build
       - task: clean-pyc
       - task: clean-test
 
   clean-build:
+    desc: cleans Python builds
     deps: [check-virtualenv]
+    silent: true
     cmds:
       - echo "remove build artifacts"
       - rm -fr build/
@@ -45,7 +53,9 @@ tasks:
       - rm -fr {{.PACKAGE_NAME}}.egg-info
 
   clean-pyc:
+    desc: cleans Python artifacts
     deps: [check-virtualenv]
+    silent: true
     cmds:
       - echo "remove Python file artifacts"
       #- find . -name '*.pyc' -exec rm -f {} +
@@ -54,7 +64,9 @@ tasks:
       #- find . -name '__pycache__' -exec rm -fr {} +
 
   clean-test:
+    desc: cleans test files
     deps: [check-virtualenv]
+    silent: true
     cmds:
       - echo "remove test and coverage artifacts"
       - rm -fr .tox/
@@ -62,64 +74,28 @@ tasks:
       - rm -fr htmlcov/
       - rm -fr .pytest_cache
 
-  package-help:
+  help:
+    desc: runs `help` command on the package
     deps: [check-virtualenv]
+    silent: true
     cmds:
       - echo 'package version {{.PACKAGE_VERSION}}'
-      - python -m pymultissher --help
+      - python -m {{.PACKAGE_NAME}} --help
 
-
-  dev-install:
+  install:
+    desc: installs the package in `editable` mode
     deps: [check-virtualenv]
+    silent: true
     cmds:
       - pip install --editable .
       - python -c "import {{.PACKAGE_NAME}}"
 
-  dev-uninstall:
+  uninstall:
+    desc: uninstalls the package
     deps: [check-virtualenv]
+    silent: true
     cmds:
       - pip uninstall {{.PACKAGE_NAME}}
-
-  dev-pre-commit:
-    deps: [check-virtualenv]
-    cmds:
-      - pre-commit run --all-files
-
-  dev-tag-version:
-    deps: [check-virtualenv]
-    cmds:
-      - task: build
-      - echo  {{.PACKAGE_VERSION}}
-
-  dev-tag-create:
-    vars:
-        PACKAGE_VERSION:
-            sh:
-                python -c "import importlib.metadata; print(importlib.metadata.version('{{.PACKAGE_NAME}}'))"
-    deps: [check-virtualenv]
-    cmds:
-      - task: build
-      - git tag {{.PACKAGE_VERSION}}
-      - task: dev-tag-describe
-
-  dev-tag-re-create:
-    deps: [check-virtualenv]
-    cmds:
-      - git tag -d {{.PACKAGE_VERSION}}
-      - task: dev-tag-create
-
-  dev-tag-describe:
-    deps: [check-virtualenv]
-    cmds:
-      - echo "git tags"
-      - git tag
-      - echo "latest git tags"
-      - git describe --tags --abbrev=0
-
-  dev-tag-push:
-    deps: [check-virtualenv]
-    cmds:
-        - git push --tags origin
 
   build:
     deps: [check-virtualenv]
@@ -130,7 +106,9 @@ tasks:
       - ls -l dist
 
   publish-test-pypi:
+    desc: publishes "{{.PACKAGE_NAME}}" on TestPyPI
     deps: [check-virtualenv]
+    silent: true
     cmds:
       - echo "builds source and wheel package"
       - task: build

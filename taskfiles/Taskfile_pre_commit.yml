@@ -1,0 +1,43 @@
+version: '3'
+
+vars:
+  VENV_DIR: ".venv"
+
+tasks:
+
+  check-virtualenv:
+    desc: checks Python's virtualenv activation
+    aliases: [cv]
+    silent: true
+    run: once
+    cmds:
+      - echo "Check existence of a virtual directory-> {{.VENV_DIR}}"
+      - test -d {{.VENV_DIR}}
+      - echo -n "Check if virtual environment is active-> " && python -c "import sys; print('virtualenv is active' if sys.prefix != sys.base_prefix else 'virtualenv is NOT active')"
+      - python -c "import sys; exit(1 if sys.prefix == sys.base_prefix else 0)"
+      - python --version
+
+  install:
+    desc: installs git hooks
+    aliases: [pci]
+    deps: [check-virtualenv]
+    silent: true
+    cmds:
+      - pre-commit install
+
+  run:
+    desc: runs installed git hooks
+    aliases: [pcr]
+    deps: [check-virtualenv]
+    silent: true
+    cmds:
+      - pre-commit run --all-files
+
+  update:
+    desc: updates git hooks
+    aliases: [pcu]
+    deps: [check-virtualenv]
+    silent: true
+    cmds:
+      - pre-commit autoupdate
+      - pre-commit run --all-files

@@ -11,8 +11,8 @@ python -m venv .venv
 call .\.venv\Scripts\activate.bat
 python -m pip install --upgrade pip
 pip install uv
-uv pip install -r requirements-prod.txt
-uv pip install -r requirements-dev.txt
+uv pip install -r requirements\requirements-prod.txt
+uv pip install -r requirements\requirements-dev.txt
 
 :END
 endlocal

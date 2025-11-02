@@ -35,7 +35,7 @@ python -m msconsconverter convert --help
 #### Dependencies: Overview
 
 * Python > 3.7
-* requirements.txt
+* requirements/requirements-prod.txt
 
 #### Dependencies: Clone and Install Dependencies
 
@@ -45,8 +45,8 @@ git clone https://github.com/vdmitriyev/msconsconverter
 ```
 * Install dependencies or use ```scripts/cmdInitiateEnv.bat```
 ```
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
+pip install -r requirements/requirements.txt
+pip install -r requirements/requirements-dev.txt
 ```
 
 #### Run Tests
@@ -62,7 +62,6 @@ python -m pytest -s
 * [EDI@Energy MSCONS](https://www.edi-energy.de/index.php?id=38) -> format description, see "Bewegungsdaten" section
 * http://www.edi-energy.de/
 * [Various Usages](https://www.bundesnetzagentur.de/DE/Service-Funktionen/Beschlusskammern/Beschlusskammer6/BK6_31_GPKE_und_GeLiGas/BK6_GPKE_undGeLi_Gas_node.html) -> see "GPKE" section
-
 
 ## License
 

@@ -1,0 +1,43 @@
+version: '3'
+
+vars:
+  PACKAGE_NAME: "msconsconverter"
+  PACKAGE_VERSION:
+    sh:
+        python -c "import importlib.metadata; print(importlib.metadata.version('{{.PACKAGE_NAME}}'))"
+
+tasks:
+
+  git-tag-create:
+    desc: creates a new git tag (uses version of "{{.PACKAGE_NAME}}")
+    aliases: [gtc]
+    silent: true
+    cmds:
+      - git tag {{.PACKAGE_VERSION}}
+      - echo "latest git tag"
+      - git describe --tags --abbrev=0
+
+  git-tag-re-create:
+    desc: re-creates a new git tag (uses version of "{{.PACKAGE_NAME}}")
+    aliases: [gtrc]
+    silent: true
+    cmds:
+      - git tag -d {{.PACKAGE_VERSION}}
+      - task: git-tag-create
+
+  git-tag-show:
+    desc: shows  all git tags
+    aliases: [gts]
+    silent: true
+    cmds:
+      - echo "list of git tags"
+      - git tag
+      - echo "latest git tag"
+      - git describe --tags --abbrev=0
+
+  git-tag-push:
+    desc: pushes all git tags to remote
+    aliases: [gtp]
+    silent: true
+    cmds:
+        - git push --tags origin
