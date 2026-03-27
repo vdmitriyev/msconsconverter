@@ -91,14 +91,12 @@ class MSCONSConverter:
 
         self.MSCONS_DECIMAL_MARK = DECIMAL_MARK
 
-        self.logger.debug(
-            f"""\nspecial symbols that will be used
+        self.logger.debug(f"""\nspecial symbols that will be used
             COMPONENT_SEPARATOR {COMPONENT_SEPARATOR}
             ELEMENT_SEPARATOR {ELEMENT_SEPARATOR}
             DECIMAL_MARK {self.MSCONS_DECIMAL_MARK}
             RELEASE_SYMBOL {RELEASE_SYMBOL}
-            SEGMENTAION_SYMBOL {SEGMENTAION_SYMBOL}"""
-        )
+            SEGMENTAION_SYMBOL {SEGMENTAION_SYMBOL}""")
 
         mscons_tokens = mscons_data.split(SEGMENTAION_SYMBOL)
         cur_qty = 0.0

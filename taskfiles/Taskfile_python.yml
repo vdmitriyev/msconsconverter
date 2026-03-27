@@ -1,0 +1,136 @@
+version: '3'
+
+vars:
+  VENV_DIR: ".venv"
+  PACKAGE_NAME: "msconsconverter"
+  PACKAGE_VERSION:
+    sh: |
+      python -c """
+      import importlib.metadata
+      try:
+        print(importlib.metadata.version('{{.PACKAGE_NAME}}'))
+      except ImportError:
+        print('0.0.0')
+      """
+
+tasks:
+
+  default:
+    desc: lists all tasks
+    silent: true
+    cmds:
+      - task --list-all
+      - echo ""
+      - echo "Example usage-> 'task check-virtualenv'"
+
+  check-virtualenv:
+    desc: checks Python's virtualenv activation
+    aliases: [cv]
+    silent: true
+    internal: true
+    run: once
+    cmds:
+      - echo "Check existence of a virtual directory-> {{.VENV_DIR}}"
+      - test -d {{.VENV_DIR}}
+      - echo -n "Check if virtual environment is active-> " && python -c "import sys; print('virtualenv is active' if sys.prefix != sys.base_prefix else 'virtualenv is NOT active')"
+      - python -c "import sys; exit(1 if sys.prefix == sys.base_prefix else 0)"
+      - python --version
+
+  clean-all:
+    desc: cleans all
+    deps: [check-virtualenv]
+    run: once
+    silent: true
+    cmds:
+      - task: clean-build
+      - task: clean-pyc
+      - task: clean-test
+
+  clean-build:
+    desc: cleans Python builds
+    silent: true
+    deps: [check-virtualenv]
+    cmds:
+      - echo "remove build artifacts"
+      - rm -fr build/
+      - rm -fr dist/
+      - rm -fr .eggs/
+      - rm -fr {{.PACKAGE_NAME}}.egg-info
+
+  clean-pyc:
+    desc: cleans Python artifacts
+    silent: true
+    deps: [check-virtualenv]
+    cmds:
+      - echo "remove Python file artifacts"
+      #- find . -name '*.pyc' -exec rm -f {} +
+      #- find . -name '*.pyo' -exec rm -f {} +
+      #- find . -name '*~' -exec rm -f {} +
+      #- find . -name '__pycache__' -exec rm -fr {} +
+
+  clean-test:
+    desc: cleans tests artifacts
+    deps: [check-virtualenv]
+    cmds:
+      - echo "remove test and coverage artifacts"
+      - rm -fr .tox/
+      - rm -f .coverage
+      - rm -fr htmlcov/
+      - rm -fr .pytest_cache
+
+  version:
+    desc: shows version of "{{.PACKAGE_NAME}}"
+    deps: [check-virtualenv]
+    cmds:
+      - echo 'package version {{.PACKAGE_VERSION}}'
+      - python -m {{.PACKAGE_NAME}} --help
+
+  install:
+    desc: installs "{{.PACKAGE_NAME}}"
+    deps: [check-virtualenv]
+    cmds:
+      - pip install --editable .
+      - python -c "import {{.PACKAGE_NAME}}"
+
+  uninstall:
+    desc: uninstalls "{{.PACKAGE_NAME}}"
+    deps: [check-virtualenv]
+    cmds:
+      - pip uninstall {{.PACKAGE_NAME}}
+
+  build:
+    desc: builds "{{.PACKAGE_NAME}}"
+    silent: true
+    deps: [check-virtualenv]
+    cmds:
+      - task: clean-build
+      - echo "builds source and wheel package"
+      - py -m build
+      - echo "files in dist"
+      - ls -lh dist
+
+  publish-test-pypi:
+    desc: publishes "{{.PACKAGE_NAME}}"
+    deps: [check-virtualenv]
+    cmds:
+      - echo "uploads to testpypi"
+      - task: build
+      - py -m twine upload --repository testpypi dist/*
+
+  bandit:
+    desc: runs bandit
+    aliases: []
+    deps: [check-virtualenv]
+    silent: true
+    cmds:
+      - echo "running bandit (static code analysis)"
+      - bandit -x "./.venv,./.tox,./tests" -r .
+
+  pylint:
+    desc: runs pylint
+    aliases: []
+    deps: [check-virtualenv]
+    silent: true
+    cmds:
+      - echo "running pylint (static code analysis)"
+      - pylint src

@@ -11,17 +11,17 @@ repos:
     -   id: debug-statements
 
 -   repo: https://github.com/psf/black
-    rev: 25.9.0
+    rev: 26.3.1
     hooks:
     - id: black
 
 -   repo: https://github.com/pycqa/isort
-    rev: 7.0.0
+    rev: 8.0.1
     hooks:
       - id: isort
         args: ["--profile", "black", "--filter-files"]
 
 -   repo: https://github.com/gitleaks/gitleaks
-    rev: v8.28.0
+    rev: v8.30.0
     hooks:
       - id: gitleaks

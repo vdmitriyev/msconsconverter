@@ -1,43 +1,67 @@
 version: '3'
 
 vars:
+  VENV_DIR: ".venv"
   PACKAGE_NAME: "msconsconverter"
   PACKAGE_VERSION:
-    sh:
-        python -c "import importlib.metadata; print(importlib.metadata.version('{{.PACKAGE_NAME}}'))"
+    sh: |
+      python -c """
+      import importlib.metadata
+      try:
+        print(importlib.metadata.version('{{.PACKAGE_NAME}}'))
+      except ImportError:
+        print('0.0.0')
+      """
 
 tasks:
 
-  git-tag-create:
+  check-virtualenv:
+    internal: true
+    desc: checks Python's virtualenv activation
+    aliases: [cv]
+    silent: true
+    run: once
+    cmds:
+      - echo "Check existence of a virtual directory-> {{.VENV_DIR}}"
+      - test -d {{.VENV_DIR}}
+      - echo -n "Check if virtual environment is active-> " && python -c "import sys; print('virtualenv is active' if sys.prefix != sys.base_prefix else 'virtualenv is NOT active')"
+      - python -c "import sys; exit(1 if sys.prefix == sys.base_prefix else 0)"
+      - python --version
+
+  tag-create:
     desc: creates a new git tag (uses version of "{{.PACKAGE_NAME}}")
     aliases: [gtc]
+    deps: [check-virtualenv]
     silent: true
     cmds:
       - git tag {{.PACKAGE_VERSION}}
       - echo "latest git tag"
       - git describe --tags --abbrev=0
 
-  git-tag-re-create:
+  tag-re-create:
     desc: re-creates a new git tag (uses version of "{{.PACKAGE_NAME}}")
     aliases: [gtrc]
+    deps: [check-virtualenv]
     silent: true
     cmds:
       - git tag -d {{.PACKAGE_VERSION}}
-      - task: git-tag-create
+      - task: tag-create
 
-  git-tag-show:
+  tag-show:
     desc: shows  all git tags
     aliases: [gts]
+    deps: [check-virtualenv]
     silent: true
     cmds:
-      - echo "list of git tags"
+      - echo "list of git tag"
       - git tag
       - echo "latest git tag"
       - git describe --tags --abbrev=0
 
-  git-tag-push:
+  tag-push:
     desc: pushes all git tags to remote
     aliases: [gtp]
+    deps: [check-virtualenv]
     silent: true
     cmds:
         - git push --tags origin

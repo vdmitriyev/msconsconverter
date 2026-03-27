@@ -1,17 +1,13 @@
 version: '3'
 
-vars:
-  PACKAGE_NAME: "msconsconverter"
-  PACKAGE_VERSION:
-    sh:
-        python -c "import importlib.metadata; print(importlib.metadata.version('{{.PACKAGE_NAME}}'))"
-  VENV_DIR: ".venv"
-
 includes:
-    git: ./taskfiles/Taskfile_git.yml
-    precommit: ./taskfiles/Taskfile_pre_commit.yml
+
+  py: ./taskfiles/Taskfile_python.yml
+  git: ./taskfiles/Taskfile_git.yml
+  pre-commit: ./taskfiles/Taskfile_pre_commit.yml
 
 tasks:
+
   default:
     desc: lists all tasks
     silent: true
@@ -19,97 +15,3 @@ tasks:
       - task --list-all
       - echo ""
       - echo "Example usage-> 'task check-virtualenv'"
-
-  check-virtualenv:
-    desc: checks Python's virtualenv activation
-    aliases: [cv]
-    silent: true
-    run: once
-    cmds:
-      - echo "Check existence of a virtual directory-> {{.VENV_DIR}}"
-      - test -d {{.VENV_DIR}}
-      - echo -n "Check if virtual environment is active-> " && python -c "import sys; print('virtualenv is active' if sys.prefix != sys.base_prefix else 'virtualenv is NOT active')"
-      - python -c "import sys; exit(1 if sys.prefix == sys.base_prefix else 0)"
-      - python --version
-
-  clean:
-    desc: cleans all files
-    deps: [check-virtualenv]
-    silent: true
-    cmds:
-      - task: clean-build
-      - task: clean-pyc
-      - task: clean-test
-
-  clean-build:
-    desc: cleans Python builds
-    deps: [check-virtualenv]
-    silent: true
-    cmds:
-      - echo "remove build artifacts"
-      - rm -fr build/
-      - rm -fr dist/
-      - rm -fr .eggs/
-      - rm -fr {{.PACKAGE_NAME}}.egg-info
-
-  clean-pyc:
-    desc: cleans Python artifacts
-    deps: [check-virtualenv]
-    silent: true
-    cmds:
-      - echo "remove Python file artifacts"
-      #- find . -name '*.pyc' -exec rm -f {} +
-      #- find . -name '*.pyo' -exec rm -f {} +
-      #- find . -name '*~' -exec rm -f {} +
-      #- find . -name '__pycache__' -exec rm -fr {} +
-
-  clean-test:
-    desc: cleans test files
-    deps: [check-virtualenv]
-    silent: true
-    cmds:
-      - echo "remove test and coverage artifacts"
-      - rm -fr .tox/
-      - rm -f .coverage
-      - rm -fr htmlcov/
-      - rm -fr .pytest_cache
-
-  help:
-    desc: runs `help` command on the package
-    deps: [check-virtualenv]
-    silent: true
-    cmds:
-      - echo 'package version {{.PACKAGE_VERSION}}'
-      - python -m {{.PACKAGE_NAME}} --help
-
-  install:
-    desc: installs the package in `editable` mode
-    deps: [check-virtualenv]
-    silent: true
-    cmds:
-      - pip install --editable .
-      - python -c "import {{.PACKAGE_NAME}}"
-
-  uninstall:
-    desc: uninstalls the package
-    deps: [check-virtualenv]
-    silent: true
-    cmds:
-      - pip uninstall {{.PACKAGE_NAME}}
-
-  build:
-    deps: [check-virtualenv]
-    cmds:
-      - echo "builds source and wheel package"
-      - task: clean-build
-      - py -m build
-      - ls -l dist
-
-  publish-test-pypi:
-    desc: publishes "{{.PACKAGE_NAME}}" on TestPyPI
-    deps: [check-virtualenv]
-    silent: true
-    cmds:
-      - echo "builds source and wheel package"
-      - task: build
-      - py -m twine upload --repository testpypi dist/*
