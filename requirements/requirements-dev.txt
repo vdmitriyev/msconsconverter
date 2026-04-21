@@ -3,7 +3,7 @@ bump-my-version==0.24.2
 wheel==0.46.2
 tox==4.16.0
 twine==6.2.0
-pytest==8.0.0
+pytest==9.0.3
 black==26.3.1
 isort==6.0.0b2
 pre-commit==3.7.1
