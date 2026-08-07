@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 
 import logging
-import sys
-from sys import platform
 
 import click
 import typer

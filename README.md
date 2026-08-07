@@ -2,28 +2,37 @@
 
 Converts MSCONS (EDIFACT) to CSV.
 
-## Installation (TestPyPI)
+## Installation
 
+### Using pip
+
+Install latest related version
 ```
-pip install --index-url https://test.pypi.org/simple/ --upgrade msconsconverter
+pip install --upgrade msconsconverter
+```
+
+Install latest version from source code
+```
+pip install git+https://github.com/vdmitriyev/msconsconverter.git
 ```
 
 ## Usage: CLI
 
-```
-python -m msconsconverter convert --input-directory tests/data --output-directory tests/data/output
-```
-* Convert by providing a directory with data as input in a verbose/debug mode
-```
-python -m msconsconverter convert --debug --input-directory tests/data --output-directory tests/data/output
-```
-* Convert by providing a file with data as input in a verbose/debug mode
-```
-python -m msconsconverter convert --debug --input-file tests/data/MSCONS_TL_SAMPLE01.txt --output-directory tests/data/output
-```
 * Get help
 ```
 python -m msconsconverter convert --help
+```
+* Convert by providing a `directory` with data as input
+```
+python -m msconsconverter convert --input-directory tests/data --output-directory tests/data/output
+```
+* Convert by providing a `directory` with data as input in a verbose/debug mode
+```
+python -m msconsconverter convert --debug --input-directory tests/data --output-directory tests/data/output
+```
+* Convert by providing a `file` with data as input in a verbose/debug mode
+```
+python -m msconsconverter convert --debug --input-file tests/data/MSCONS_TL_SAMPLE01.txt --output-directory tests/data/output
 ```
 
 ## Usage: CLI --help example
@@ -49,7 +58,7 @@ pip install -r requirements/requirements.txt
 pip install -r requirements/requirements-dev.txt
 ```
 
-#### Run Tests
+#### Development: Run Tests
 
 ```
 python -m pytest -s
@@ -65,4 +74,4 @@ python -m pytest -s
 
 ## License
 
-MIT License
+MIT
